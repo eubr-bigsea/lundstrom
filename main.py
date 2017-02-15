@@ -1,3 +1,9 @@
+#
+# This file is just an usage example. 
+# Here we define a list of queries and a list of amount of executors.
+# The Spark logs should be placed at the ./data/ folder, organized by query and number of executors.
+# In this example, the folders for all experiments are read and all those logs files are processed.
+#
 from run_lundstrom import lundstrom_from_logdir
 from util import plot_DAG
 
