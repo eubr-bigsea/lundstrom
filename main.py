@@ -28,7 +28,7 @@ for q in queries:
 			meanAppTime+=appTime
 			meanPredTime+=predTime
 			meanElapsed+=elapsed
-			# plot_DAG(app)
+
 		meanAppTime /= len(results)
 		meanPredTime /= len(results)
 		meanElapsed /= len(results)

@@ -28,10 +28,10 @@ def parse_logs(logpath):
 def lundstrom(N, C, response, demand, overlap):
 	write_files((response, demand, overlap))
 	cmd = "./bin/makva -N %s -C %s -e 50 -r temp/response.txt -s temp/demand.txt -o temp/overlap.txt" % (N, C)
-
 	start_time = time.time()
 	output = os.popen(cmd).read()
 	elapsed_time = time.time() - start_time
+
 	return float(output.replace("\n","").replace("R: ", "").strip())/C, elapsed_time*1000
 
 def lundstrom_from_logdir(K, logdir):
