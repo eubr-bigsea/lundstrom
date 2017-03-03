@@ -17,7 +17,7 @@ def sub_unix_timestamps(end, start):
 
 def read_files(logpath):
 	import os
-	return [s for s in os.listdir(logpath)]
+	return [s for s in os.listdir(logpath) if not s.startswith('.DS_Store')]
 	#return [s for s in os.listdir(logpath) if s.startswith('app') or s.startswith('eventLogs')]
 
 def read_file(filepath):
