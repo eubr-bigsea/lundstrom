@@ -1,4 +1,4 @@
-import json
+import json, sys
 from util import sub_unix_timestamps
 
 # 
@@ -67,15 +67,13 @@ def overlap_factor(stage1, stage2):
 	if stage2["start"] >= stage1["end"] or stage1["start"] >= stage2["end"]:
 		return 0
 
-	task_i_time = float(sub_unix_timestamps(stage1["start"], stage1["end"]))
-	if stage2["start"] > stage1["start"] and stage2["start"] < stage1["end"]:
-		start = stage2["start"]
-		end = stage1["end"] if stage2["end"] > stage1["end"] else stage2["end"]
-	elif stage1["start"] > stage2["start"] and stage1["start"] < stage2["end"]:
-		start = stage1["start"]
-		end = stage2["end"] if stage1["end"] > stage2["end"] else stage1["end"]
+	start_ovl = stage2["start"] if stage2["start"] > stage1["start"] else stage1["start"]
+	end_ovl = stage2["end"] if stage2["end"] < stage1["end"] else stage1["end"]
+	overlap_time = float(sub_unix_timestamps(end_ovl, start_ovl))
 
-	overlap_time = float(sub_unix_timestamps(end, start))
+
+	task_i_time = float(sub_unix_timestamps(stage1["end"], stage1["start"]))
+
 	return overlap_time/task_i_time
 
 #

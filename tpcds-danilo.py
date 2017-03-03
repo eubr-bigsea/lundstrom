@@ -19,7 +19,7 @@ for q in queries:
 	list_elapsed[q] = []
 
 	for K in servers:
-		logdir = "./data/%s/%dexecutors/" % (q, K)
+		logdir = "./data/tpcds-danilo/%s/%dexecutors/" % (q, K)
 		results = lundstrom_from_logdir(K, logdir)
 		meanAppTime = 0
 		meanPredTime = 0

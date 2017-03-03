@@ -14,14 +14,14 @@ def parse_logs(logpath):
 
 	dags = {}
 	for filename in files:
-		appTime, app = parse_DAG(logpath + filename)	
+		appTime, app = parse_DAG(logpath + filename)
+		
 		tree = parse_stages_as_tree(app)
 		ahash = hash_tree(tree)
 		if not dags.has_key(ahash):
 			dags[ahash] = []
 
 		dags[ahash].append((appTime, app, tree))
-
 
 	return dags
 
@@ -37,7 +37,7 @@ def lundstrom(N, C, response, demand, overlap):
 def lundstrom_from_logdir(K, logdir):
 	dags = parse_logs(logdir)
 	results = []
-
+	
 	for dag in dags:	
 		executions = len(dags[dag])
 		meanAppTime = 0
@@ -56,8 +56,8 @@ def lundstrom_from_logdir(K, logdir):
 		meanResponse /= executions
 		meanDemand /= executions
 		meanOverlap /= executions
-		predTime, elapsed = lundstrom(len(app), K, meanResponse, meanDemand, meanOverlap)
 
+		predTime, elapsed = lundstrom(len(app), K, meanResponse, meanDemand, meanOverlap)
 		results.append((meanAppTime, predTime, elapsed, app, tree))
 
 	return results
