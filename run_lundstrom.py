@@ -5,9 +5,10 @@ import sys,os, math, time
 
 def write_files(data):
 	response, demand, overlap = data
-	write_file_from_matrix("temp/response.txt", response)
-	write_file_from_matrix("temp/demand.txt", demand)
-	write_file_from_matrix("temp/overlap.txt", overlap)
+	dir_path = os.path.dirname(os.path.realpath(__file__))
+	write_file_from_matrix(dir_path+"/temp/response.txt", response)
+	write_file_from_matrix(dir_path+"/temp/demand.txt", demand)
+	write_file_from_matrix(dir_path+"/temp/overlap.txt", overlap)
 
 def parse_logs(logpath):
 	files = read_files(logpath)
@@ -27,7 +28,8 @@ def parse_logs(logpath):
 
 def lundstrom(N, C, response, demand, overlap):
 	write_files((response, demand, overlap))
-	cmd = "./bin/makva -N %s -C %s -e 50 -r temp/response.txt -s temp/demand.txt -o temp/overlap.txt" % (N, C)
+	dir_path = os.path.dirname(os.path.realpath(__file__))
+	cmd = "%s/bin/makva -N %s -C %s -e 50 -r %s/temp/response.txt -s %s/temp/demand.txt -o %s/temp/overlap.txt" % (dir_path, N, C, dir_path, dir_path, dir_path)
 	start_time = time.time()
 	output = os.popen(cmd).read()
 	elapsed_time = time.time() - start_time

@@ -3,16 +3,10 @@
 #
 def sub_unix_timestamps(end, start):
 	from datetime import datetime, timedelta
-	time = str(end-start)
-
-	t = time[0:-3]
-	milliseconds = int(time[-3:])
-	unix_timestamp = float(t) if t else 0
-	timec = datetime.fromtimestamp(unix_timestamp)
-	timec += timedelta(milliseconds=milliseconds)
-
-	baseline = datetime.fromtimestamp(0)
-	ms = (timec-baseline).total_seconds() * 1000.0
+	duration = end-start
+	time = str(duration)
+	timec = timedelta(milliseconds=duration)
+	ms = timec.total_seconds() * 1000.0
 	return ms
 
 def read_files(logpath):

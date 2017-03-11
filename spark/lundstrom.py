@@ -63,23 +63,37 @@ def extract_stages(logpath):
 # stage1 - task i
 # stage2 - task j
 #
-def overlap_factor(stage1, stage2):
-	if stage2["start"] >= stage1["end"] or stage1["start"] >= stage2["end"]:
-		return 0
+def overlap_factor(K, stage1, stage2):
+	# MAK & LUNDSTROM P. 263
+	# theta_i_j = pij * dij / Ri
+	#
+	# theta = overlap factor
+	# pij = probability of i starting before j
+	# dij = overlap duration time
+	# Ri = task i response time
+
+	Pr_Ej_less_Si = int(stage2["end"] < stage1["start"])
+	Pr_Ei_less_Sj = int(stage1["end"] < stage2["start"])
+
+	pij = 1.0 - Pr_Ej_less_Si - Pr_Ei_less_Sj
 
 	start_ovl = stage2["start"] if stage2["start"] > stage1["start"] else stage1["start"]
 	end_ovl = stage2["end"] if stage2["end"] < stage1["end"] else stage1["end"]
-	overlap_time = float(sub_unix_timestamps(end_ovl, start_ovl))
 
+	# overlap duration at all service centers
+	dij = K*float(sub_unix_timestamps(end_ovl, start_ovl))
+	# residence time of task i at all service centers
+	Ri = K*float(sub_unix_timestamps(stage1["end"], stage1["start"]))
 
-	task_i_time = float(sub_unix_timestamps(stage1["end"], stage1["start"]))
+	# Rj = K*float(sub_unix_timestamps(stage2["end"], stage2["start"]))
+	# dij = 1.0 / ( (1.0/Ri) + (1.0/Rj) )
 
-	return overlap_time/task_i_time
+	return (pij*dij)/Ri
 
 #
 # stages - stages object
 #
-def extract_overlap(stages):
+def extract_overlap(K, stages):
 	# create the overlap matrix
 	overlap_map = []
 	for i, stage_i in enumerate(stages):
@@ -99,7 +113,7 @@ def extract_overlap(stages):
 				# the overlap factor, is defined as the fraction of task i residence time 
 				# for which task i overlaps with taskj
 				# (MAKVA & LUNDSTROM, p. 261)
-				factor = overlap_factor(stage_i, stage_j)
+				factor = overlap_factor(K, stage_i, stage_j)
 				overlap_map[i][j] = factor
 
 	return overlap_map
@@ -135,5 +149,5 @@ def extract_data(K, appTime, stages):
 	import numpy as np
 	response = extract_response(K, stages)
 	demand = extract_demand(K, stages)
-	overlap = extract_overlap(stages)
+	overlap = extract_overlap(K, stages)
 	return (appTime, stages, np.array(response), np.array(demand), np.array(overlap))
