@@ -1,5 +1,5 @@
 import json, sys
-from util import sub_unix_timestamps
+from util import sub_unix_timestamps, sub_datetimes
 
 # 
 # Calculate overlap factor
@@ -19,18 +19,26 @@ def overlap_factor(K, stage1, stage2):
 	# dij = overlap duration time
 	# Ri = task i response time
 
-	Pr_Ej_less_Si = int(stage2["end"] < stage1["start"])
-	Pr_Ei_less_Sj = int(stage1["end"] < stage2["start"])
+	diff1 = sub_datetimes(stage2["end_datetime"], stage1["start_datetime"])
+	Pr_Ej_less_Si = int(diff1 < 0)
 
-	pij = 1.0 - Pr_Ej_less_Si - Pr_Ei_less_Sj
+	diff2 = sub_datetimes(stage1["end_datetime"], stage2["start_datetime"])
+	Pr_Ei_less_Sj = int(diff2 < 0)
 
-	start_ovl = stage2["start"] if stage2["start"] > stage1["start"] else stage1["start"]
-	end_ovl = stage2["end"] if stage2["end"] < stage1["end"] else stage1["end"]
+	diff3 = sub_datetimes(stage2["start_datetime"], stage1["start_datetime"])
+	start_ovl = stage2["start_datetime"] if diff3 > 0 else stage1["start_datetime"]
+
+	diff4 = sub_datetimes(stage2["end_datetime"], stage1["end_datetime"])
+	end_ovl = stage2["end_datetime"] if diff4 < 0 else stage1["end_datetime"]
 
 	# overlap duration at all service centers
-	dij = K*float(sub_unix_timestamps(end_ovl, start_ovl))
+	dij = K*float(sub_datetimes(end_ovl, start_ovl))
+
 	# residence time of task i at all service centers
-	Ri = K*float(sub_unix_timestamps(stage1["end"], stage1["start"]))
+	Ri = K*float(sub_datetimes(stage1["end_datetime"], stage1["start_datetime"]))
+
+	# overlap probability
+	pij = 1.0 - Pr_Ej_less_Si - Pr_Ei_less_Sj
 
 	# Rj = K*float(sub_unix_timestamps(stage2["end"], stage2["start"]))
 	# dij = 1.0 / ( (1.0/Ri) + (1.0/Rj) )
@@ -72,8 +80,8 @@ def extract_overlap(K, stages):
 def extract_response(K, stages):
 	response = []
 	for stage in stages:
-		time_1_server = sub_unix_timestamps(stage["end"], stage["start"])/K
-		response.append(K*[time_1_server])
+		time_1_server = sub_datetimes(stage["end_datetime"], stage["start_datetime"])
+		response.append(K*[time_1_server/K])
 
  	return response
 
@@ -84,8 +92,8 @@ def extract_response(K, stages):
 def extract_demand(K, stages):
 	demand = []
 	for stage in stages:
-		time_1_server = sub_unix_timestamps(stage["end"], stage["start"])/K
-		demand.append(K*[time_1_server])
+		time_1_server = sub_datetimes(stage["end_datetime"], stage["start_datetime"])
+		demand.append(K*[time_1_server/K])
 
  	return demand
 

@@ -9,6 +9,26 @@ def sub_unix_timestamps(end, start):
 	ms = timec.total_seconds() * 1000.0
 	return ms
 
+def datetime_to_unix_timestamp(datetime_str):
+	import time
+	import datetime
+
+	# format 2017-02-20 12:42:32,066
+	uts = time.mktime(datetime.datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S,%f").timetuple())
+	return uts
+
+def sub_datetimes(end_date, start_date):
+	from datetime import datetime
+
+	def __datetime(date_str):
+	    return datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S,%f')
+
+	start = __datetime(start_date)
+	end = __datetime(end_date)
+
+	delta = end - start
+	return delta.total_seconds()*1000.0
+
 def read_files(logpath):
 	import os
 	return [s for s in os.listdir(logpath) if not s.startswith('.DS_Store')]
