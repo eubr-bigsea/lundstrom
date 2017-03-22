@@ -33,7 +33,6 @@ def lundstrom(N, C, response, demand, overlap):
 	start_time = time.time()
 	output = os.popen(cmd).read()
 	elapsed_time = time.time() - start_time
-	print cmd
 	return float(output.replace("\n","").replace("R: ", "").strip())/C, elapsed_time*1000
 
 def lundstrom_from_logdir(K, logdir):

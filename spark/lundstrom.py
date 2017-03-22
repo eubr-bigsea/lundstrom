@@ -19,23 +19,24 @@ def overlap_factor(K, stage1, stage2):
 	# dij = overlap duration time
 	# Ri = task i response time
 
-	Pr_Ej_less_Si = int(stage2["end"] < stage1["start"])
-	Pr_Ei_less_Sj = int(stage1["end"] < stage2["start"])
+	# Pr_Ej_less_Si = int(stage2["end"] < stage1["start"])
+	# Pr_Ei_less_Sj = int(stage1["end"] < stage2["start"])
 
-	pij = 1.0 - Pr_Ej_less_Si - Pr_Ei_less_Sj
+	# pij = 1.0 - Pr_Ej_less_Si - Pr_Ei_less_Sj
 
 	start_ovl = stage2["start"] if stage2["start"] > stage1["start"] else stage1["start"]
 	end_ovl = stage2["end"] if stage2["end"] < stage1["end"] else stage1["end"]
 
 	# overlap duration at all service centers
-	dij = K*float(sub_unix_timestamps(end_ovl, start_ovl))
+	dij = float(sub_unix_timestamps(end_ovl, start_ovl))
+
 	# residence time of task i at all service centers
-	Ri = K*float(sub_unix_timestamps(stage1["end"], stage1["start"]))
+	Ri = float(sub_unix_timestamps(stage1["end"], stage1["start"]))
 
 	# Rj = K*float(sub_unix_timestamps(stage2["end"], stage2["start"]))
 	# dij = 1.0 / ( (1.0/Ri) + (1.0/Rj) )
 
-	return (pij*dij)/Ri
+	return dij/Ri
 
 #
 # stages - stages object
