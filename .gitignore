@@ -6,3 +6,4 @@ Thumbs.db
 *.tmp.*
 data/*
 *.pyc
+config.json
