@@ -5,7 +5,7 @@
 # In this example, the folders for all experiments are read and all those logs files are processed.
 #
 from run_lundstrom import lundstrom_from_logdir
-import os, sys
+import os, sys, json
 
 # Getting params
 num_nodes = int(sys.argv[1])
@@ -14,9 +14,13 @@ ram_size = sys.argv[3]
 datasize = int(sys.argv[4])
 query = sys.argv[5]
 
+# reading config file
+config_file = sys.argv[6] if len(sys.argv) == 7 else "./config.json"
+config = json.loads(open(config_file, 'r').read())
+
 # determining log dir
-dir_path = os.path.dirname(os.path.realpath(__file__))
-logdir = dir_path + "/data/tpcds-ignacio/%d_%d_%s_%d/%s/" % (num_nodes, num_cores, ram_size, datasize, query)
+# dir_path = os.path.dirname(os.path.realpath(__file__))
+logdir = config["LOG_DIR"] + "/%d_%d_%s_%d/%s/logs/" % (num_nodes, num_cores, ram_size, datasize, query)
 
 # running lundstrom
 results = lundstrom_from_logdir(num_nodes*num_cores, logdir)
