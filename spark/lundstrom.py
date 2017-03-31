@@ -48,7 +48,9 @@ def extract_overlap(K, stages):
 		overlap_map.append([])
 		for j, stage_j in enumerate(stages):
 			if i == j:
-				overlap_map[i].append(1)
+				# the theta for i==j is actually 1, however the arrival time equation sum considers i=/=j only. 
+				# This condition is not implemented on the makva.c file, so we should use theta=0. 
+				overlap_map[i].append(0)
 			else:
 				overlap_map[i].append(0)
 
