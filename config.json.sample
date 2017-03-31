@@ -1,3 +1,1 @@
-{
-	"LOG_DIR": "/Users/tuliobraga/Downloads/TPCDS500-D_processed_logs"
-}
+{ "LOG_DIR": "/home/disk2/speed/tuliobraga/Downloads/tpcds-ignacio/%d_%d_%s_%d/logs/%s/" }
