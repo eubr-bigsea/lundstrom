@@ -37,4 +37,4 @@ meanAppTime /= len(results)
 meanPredTime /= len(results)
 meanElapsed /= len(results)
 
-print '{"meanAppTime": %f, "meanPredTime": %f, meanElapsedTime: %f}' % (meanAppTime, meanElapsedTime, meanPredTime)
+print '{"meanAppTime": %f, "meanPredTime": %f, meanElapsedTime: %f}' % (meanAppTime, meanElapsed, meanPredTime)
