@@ -1,1 +1,4 @@
-{ "LOG_DIR": "/home/disk2/speed/tuliobraga/Downloads/tpcds-ignacio/%d_%d_%s_%d/logs/%s/" }
+{ 
+	"LOG_DIR": "/home/disk2/speed/tuliobraga/Downloads/tpcds-ignacio/%d_%d_%s_%d/logs/%s/",
+	"COMPSS_LOG_DIR": "/home/disk2/speed/tuliobraga/Downloads/compss-daniele/%s/%d_%d_%s/"
+}
