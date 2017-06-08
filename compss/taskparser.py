@@ -1,5 +1,5 @@
 import json, sys, re, os, math, time
-from util import sub_unix_timestamps, sub_str_datetimes, sub_datetimes, read_files, parse_stages_as_tree, hash_tree, datetime_to_unix_timestamp, write_file_from_matrix
+from util import write_file, sub_unix_timestamps, sub_str_datetimes, sub_datetimes, read_files, parse_stages_as_tree, hash_tree, datetime_to_unix_timestamp, write_file_from_matrix
 from compss.lundstrom import extract_data
 
 # read log line by line as json
@@ -24,8 +24,13 @@ def parse_DAG(logPath):
 	pte = re.compile(patternTaskEnd)
 	
 	app = {}
-	open_stages = []
 	stages = []
+	tasks = {}
+
+	first_task_datetime = 0
+	first_task = 0
+	end_task = 0
+	end_task_datetime = 0
 	
 	# iterating over all events to fetch starting and ending times of tasks
 	for log in events:
@@ -34,42 +39,27 @@ def parse_DAG(logPath):
 		if "@doSubmit" in log and "Task:" in log:
 			m = pd.search(log)
 			datetime = m.group(0)
-			timestamp = datetime_to_unix_timestamp(datetime)
 
-			m = pt.search(log)
-			job_id = int(m.group(1))
-			task_id = int(m.group(2))
-
-			nid = task_id
-			app[nid] = {"id": nid, "job_id":job_id, "task_id":task_id, "overlap": [], "start": timestamp, "start_datetime": datetime, "end": False, "end_datetime": False}
-
-			# add starting stage to list of overlap stages of those who are still running
-			for opened_nid in open_stages:
-				if opened_nid != nid:
-					app[opened_nid]["overlap"].append(nid)
-					app[nid]["overlap"].append(opened_nid)
-
-			open_stages.append(nid)
-
+			n = pt.search(log)
+			job_id = int(n.group(1))
+			task_id = int(n.group(2))
+			tasks[task_id] = {"start": datetime, "end": 0}
 
 		# finding an end task event
 		if "@endTask" in log and "status FINISHED" in log:
 			m = pd.search(log)
 			datetime = m.group(0)
-			timestamp = datetime_to_unix_timestamp(datetime)
+			# timestamp = datetime_to_unix_timestamp(datetime)
 
 			m = pte.search(log)
 			task_id = int(m.group(1))
 
-			nid = task_id
+			tasks[task_id]["end"] = datetime
 
-			app[nid]["end"] = timestamp
-			app[nid]["end_datetime"] = datetime
-
-			stages.append(app[nid])
-
-			# removing terminated stages from opened stages list
-			open_stages.remove(nid)
+		# synchronizing
+		if "@waitForTask" in log:
+			stages.append(tasks)
+			tasks = {}
 
 		if "@init" in log:
 			m = pd.search(log)
@@ -87,20 +77,64 @@ def parse_logs(logpath):
 	dags = {}
 	for filename in files:
 		appTime, app = parse_DAG(logpath + filename)
-		
-		tree = parse_stages_as_tree(app)
-		ahash = hash_tree(tree)
+
+		ahash = len(app)
 		if not dags.has_key(ahash):
 			dags[ahash] = []
 
-		dags[ahash].append((appTime, app, tree))
+		dags[ahash].append((appTime, app))
 
 	return dags
 
+def mean_dag(dags):
+	meanDags = {}
+	for ahash in dags:
+		i = 0
+		k = len(dags[ahash])
+		meanAppTime = 0
+
+		if not meanDags.has_key(ahash):
+			meanDags[ahash] = []
+
+		for appTime, app in dags[ahash]:
+			meanAppTime += appTime
+			i+=1
+			# print appTime
+			for idx, stage in enumerate(app):
+
+				if len(meanDags[ahash]) == idx:
+					meanDags[ahash].append(0)
+
+				meanDags[ahash][idx] += stage["duration"]
+
+				if k == i:
+					meanDags[ahash][idx] /= k
+
+			if k == i:
+				meanAppTime/=k
+
+	return meanAppTime, meanDags			
+
+
+
 def lundstrom_from_logdir(K, logdir):
 	dags = parse_logs(logdir)
-	results = []
+	for ahash in dags:
+		i = 0
+		for appTime, app in dags[ahash]:
+			summ = 0
+			for idx, stage in enumerate(app):
+				data = ""
+				for task_id in stage:
+					duration = sub_str_datetimes(stage[task_id]["end"], stage[task_id]["start"])
+					data += "%f\n" % duration
+				write_file("./temp/%d-%d.txt"% (i, idx), data)
+			i+=1
+			print i
 
+	sys.exit()
+	results = []
+	
 	for dag in dags:
 		executions = float(len(dags[dag]))
 

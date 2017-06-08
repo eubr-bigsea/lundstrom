@@ -8,4 +8,7 @@ data/*
 *.pyc
 config.json
 *.nfs*
-temp/*.txt
+*temp/*.txt
+*temp/*.zip
+*temp/*.out
+*/temp/*

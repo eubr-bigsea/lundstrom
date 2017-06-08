@@ -4,27 +4,37 @@
 # The Spark logs should be placed at the ./data/ folder, organized by query and number of executors.
 # In this example, the folders for all experiments are read and all those logs files are processed.
 #
+# from compss.parser import lundstrom_from_logdir
 from compss.parser import lundstrom_from_logdir
 import os, sys, json
 
-# Getting params
-num_cores = int(sys.argv[1])
-fragments = int(sys.argv[2])
-points = sys.argv[3]
-query = sys.argv[4]
+# @old Getting params
+# num_cores = int(sys.argv[1])
+# fragments = int(sys.argv[2])
+# points = sys.argv[3]
+# query = sys.argv[4]
+
+num_nodes = int(sys.argv[1])
+num_cores = int(sys.argv[2])
+ram = sys.argv[3]
+points = sys.argv[4]
+query = sys.argv[5]
 
 # reading config file
-config_file = sys.argv[5] if len(sys.argv) == 6 else "./config.json"
+config_file = sys.argv[6] if len(sys.argv) == 7 else "./config.json"
 config = json.loads(open(config_file, 'r').read())
 
 
 # determining log dir
 # dir_path = os.path.dirname(os.path.realpath(__file__))
 confdir = str(config["COMPSS_LOG_DIR"])
-logdir = confdir % (query, num_cores, fragments, points)
+
+# @old logdir = confdir % (query, num_cores, fragments, points)
+logdir = confdir % (query, num_nodes, num_cores, ram, points)
 
 # running lundstrom
-results = lundstrom_from_logdir(num_cores, logdir)
+results = lundstrom_from_logdir(num_nodes*num_cores, logdir)
+
 meanAppTime = 0
 meanPredTime = 0
 meanElapsed = 0
