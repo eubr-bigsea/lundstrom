@@ -130,18 +130,18 @@ def mean_dag(dags):
 
 def lundstrom_from_logdir(K, logdir):
 	dags = parse_logs(logdir)
-	# for ahash in dags:
-	# 	i = 0
-	# 	for appTime, app in dags[ahash]:
-	# 		summ = 0
-	# 		data=""
-	# 		for idx, stage in enumerate(app):
-	# 			data += "%f " % stage["duration"]
-	# 		write_file("./temp/%d.txt"%i, data)
-	# 		i+=1
-	# 		print i
+	for ahash in dags:
+		i = 0
+		for appTime, app in dags[ahash]:
+			summ = 0
+			data=""
+			for idx, stage in enumerate(app):
+				data += "%f " % stage["duration"]
+			write_file("./temp/%d.txt"%i, data)
+			i+=1
+			print i
 
-	# sys.exit()
+	sys.exit()
 	results = []
 	
 	for dag in dags:

@@ -5,7 +5,7 @@
 # In this example, the folders for all experiments are read and all those logs files are processed.
 #
 # from compss.parser import lundstrom_from_logdir
-from compss.parser import lundstrom_from_logdir
+from compss.taskparser import lundstrom_from_logdir
 import os, sys, json
 
 # @old Getting params
