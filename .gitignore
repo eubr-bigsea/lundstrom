@@ -12,3 +12,6 @@ config.json
 *temp/*.zip
 *temp/*.out
 */temp/*
+*/temp/*.txt
+*/temp/*.out
+*/temp/*.zip
