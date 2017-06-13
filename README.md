@@ -1,6 +1,4 @@
 # spark-lundstrom
-Makva &amp; Lundstrom model execution using Apache Spark logs
+Makva &amp; Lundstrom model execution using Apache Spark or BSC COMPSs logs
 
-Add log files under data folder (spark-lundstrom/data).
-
-The example logs would be placed under spark-lundstrom/data/tpcds-ignacio
+Log folder directory should be configured at config.json file. See an example at config.json.sample.
