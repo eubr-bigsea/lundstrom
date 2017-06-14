@@ -25,5 +25,5 @@ else:
 	sys.exit()
 
 result = run_model(num_nodes, num_cores, ram_size, datasize, query, confdir)
-print result
+print result["predicted"]
 sys.exit()
