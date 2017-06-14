@@ -56,10 +56,12 @@ def parse_DAG(logPath):
 
 			tasks[task_id]["end"] = datetime
 
-		# synchronizing
-		if "@waitForTask" in log:
-			stages.append(tasks)
-			tasks = {}
+		# synchronizing, 
+		# however it's needed to check if there is more than one synchronization after the current stage
+		if "@waitForTask" in log and "End of waited task for data":
+			if tasks:
+				stages.append(tasks)
+				tasks = {}
 
 		if "@init" in log:
 			m = pd.search(log)
