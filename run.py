@@ -12,13 +12,14 @@ platform = sys.argv[6]
 config_file = sys.argv[7] if len(sys.argv) == 8 else "./config.json"
 config = json.loads(open(config_file, 'r').read())
 
-# determining log dir
-confdir = str(config["COMPSS_LOG_DIR"])
-
 if platform == "compss":
 	from run_compss import run_model
+	# determining log dir
+	confdir = str(config["COMPSS_LOG_DIR"])
 elif platform == "spark":
 	from run_spark import run_model
+	# determining log dir
+	confdir = str(config["SPARK_LOG_DIR"])
 else:
 	print "ERROR: Only 'compss' and 'spark' are available. Please, type the platform name in lowercase."
 	sys.exit()
