@@ -9,7 +9,8 @@ query = sys.argv[5]
 platform = sys.argv[6]
 
 # reading config file
-config_file = sys.argv[7] if len(sys.argv) == 8 else "./config.json"
+dir_path = os.path.dirname(os.path.realpath(__file__))
+config_file = sys.argv[7] if len(sys.argv) == 8 else dir_path+"/config.json"
 config = json.loads(open(config_file, 'r').read())
 
 if platform == "compss":

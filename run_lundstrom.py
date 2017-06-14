@@ -27,7 +27,8 @@ def parse_logs(logpath):
 	return dags
 
 def lundstrom(N, C, response, demand, overlap):
-	os.popen("gcc -o ./bin/makva ./bin/makva.c")
+	dir_path = os.path.dirname(os.path.realpath(__file__))
+	os.popen("gcc -o %s/bin/makva %s/bin/makva.c" % (dir_path, dir_path))
 	write_files((response, demand, overlap))
 	dir_path = os.path.dirname(os.path.realpath(__file__))
 	cmd = "%s/bin/makva -N %s -C %s -e 50 -r %s/temp/response.txt -s %s/temp/demand.txt -o %s/temp/overlap.txt" % (dir_path, N, C, dir_path, dir_path, dir_path)

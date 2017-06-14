@@ -8,7 +8,7 @@ def run_model(num_nodes, num_cores, ram_size, datasize, query, confdir):
 	from run_lundstrom import lundstrom_from_logdir
 
 	# determining log dir
-	logdir = confdir % (query, num_nodes, num_cores, ram, datasize)
+	logdir = confdir % (query, num_nodes, num_cores, ram_size, datasize)
 
 	# running lundstrom
 	results = lundstrom_from_logdir(num_nodes*num_cores, logdir)
