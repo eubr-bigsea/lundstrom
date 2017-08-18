@@ -91,11 +91,11 @@ def extract_overlap(K, stages):
 # K - number of servers
 # stages - stages object
 #
-def extract_response(K, stages):
+def extract_response(K, stages, factor):
 	response = []
 	for stage in stages:
 		time_1_server = sub_str_datetimes(stage["end_datetime"], stage["start_datetime"])
-		response.append(K*[time_1_server/K])
+		response.append(K*[(time_1_server/K)*factor])
 
  	return response
 
@@ -103,20 +103,24 @@ def extract_response(K, stages):
 # K - number of servers
 # stages - stages object
 #
-def extract_demand(K, stages):
+def extract_demand(K, stages, factor):
 	demand = []
 	for stage in stages:
 		time_1_server = sub_str_datetimes(stage["end_datetime"], stage["start_datetime"])
-		demand.append(K*[time_1_server/K])
+		demand.append(K*[(time_1_server/K)*factor])
 
  	return demand
 
 #
 # Extracted the data needed from spark log file
 #
-def extract_data(K, appTime, stages, baseConfig):
+def extract_data(K, K_to_predict, appTime, stages):
 	import numpy as np
-	response = extract_response(K, stages)
-	demand = extract_demand(K, stages)
+
+	# base config
+	factor = float(K)/float(K_to_predict)
+
+	response = extract_response(K, stages, factor)
+	demand = extract_demand(K, stages, factor)
 	overlap = extract_overlap(K, stages)
 	return (appTime, stages, np.array(response), np.array(demand), np.array(overlap))

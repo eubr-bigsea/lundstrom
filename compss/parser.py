@@ -97,7 +97,7 @@ def parse_logs(logpath):
 
 	return dags
 
-def lundstrom_from_logdir(K, logdir, baseConfig):
+def lundstrom_from_logdir(K, K_to_predict, logdir):
 	dags = parse_logs(logdir)
 	results = []
 
@@ -110,7 +110,7 @@ def lundstrom_from_logdir(K, logdir, baseConfig):
 		meanOverlap = 0.0
 
 		for appTime, app, tree in dags[dag]:
-			appTime, stages, response, demand, overlap = extract_data(K, appTime, app, baseConfig)
+			appTime, stages, response, demand, overlap = extract_data(K, K_to_predict, appTime, app)
 			meanAppTime += appTime
 			meanResponse += response
 			meanDemand += demand
