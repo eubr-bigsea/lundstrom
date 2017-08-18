@@ -1,0 +1,56 @@
+kmeans
+{'real': 99023.75, 'predicted': 81877.25, 'elapsed': 10.060012340545654}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 3 8 28G 48G kmeans spark
+{'real': 342195.4666666667, 'predicted': 325131.5333338, 'elapsed': 7.990026473999023}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 3 8 28G 96G kmeans spark
+{'real': 862058.8, 'predicted': 845920.4, 'elapsed': 10.66436767578125}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 6 8 28G 8G kmeans spark
+{'real': 90299.375, 'predicted': 73957.625, 'elapsed': 8.723258972167969}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 6 8 28G 48G kmeans spark
+{'real': 195026.88888888888, 'predicted': 178803.66666633333, 'elapsed': 10.260423024495443}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 6 8 28G 96G kmeans spark
+{'real': 594309.6, 'predicted': 572919.4, 'elapsed': 9.084463119506836}
+
+
+logistic 
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 3 8 28G 8G logistic_regression spark
+{'real': 178899.8, 'predicted': 159458.6, 'elapsed': 15.964031219482422}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 3 8 28G 48G logistic_regression spark
+{'real': 684430.7142857143, 'predicted': 664363.285712, 'elapsed': 16.222000122070312}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 3 8 28G 96G logistic_regression spark
+{'real': 1431853.0, 'predicted': 1414072.0, 'elapsed': 15.902996063232422}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 6 8 28G 8G logistic_regression spark
+{'real': 181977.8, 'predicted': 160961.4, 'elapsed': 31.871795654296875}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 6 8 28G 48G logistic_regression spark
+{'real': 382951.8, 'predicted': 362505.0, 'elapsed': 22.813081741333008}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 6 8 28G 96G logistic_regression spark
+{'real': 1219151.0, 'predicted': 1192617.799999979, 'elapsed': 27.1151065826416}
+
+
+svm
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 3 8 28G 8G svm spark
+{'real': 190905.83333333334, 'predicted': 171650.999999, 'elapsed': 38.450002670288086}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 3 8 28G 48G svm spark
+{'real': 356721.2, 'predicted': 339245.89999999997, 'elapsed': 21.247029304504395}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 3 8 28G 96G svm spark
+{'real': 1366994.8, 'predicted': 1349569.0, 'elapsed': 34.922122955322266}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 6 8 28G 8G svm spark
+{'real': 189684.0, 'predicted': 170184.166669, 'elapsed': 72.36504554748535}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 6 8 28G 48G svm spark
+{'real': 372529.2, 'predicted': 353248.39999999997, 'elapsed': 57.28602409362793}
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py 6 8 28G 96G svm spark
+{'real': 650509.4, 'predicted': 631144.4, 'elapsed': 61.422109603881836}
+
+
+kmeans 96gb
+{'real': 862058.8, 'predicted': 422960.2, 'elapsed': 7.817983627319336}
+
+
+logistic regression 96gb
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py -n 6 -c 8 -r 28G -d 96G -q logistic_regression -p spark -b
+{'real': 1431853.0, 'predicted': 707036.0, 'elapsed': 14.698982238769531}
+
+
+svm 96gb
+MacBook-Pro:spark-lundstrom tuliobraga$ python run.py -n 6 -c 8 -r 28G -d 96G -q svm -p spark -b
+{'real': 1366994.8, 'predicted': 674784.5, 'elapsed': 37.763118743896484}

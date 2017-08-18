@@ -37,7 +37,7 @@ def lundstrom(N, C, response, demand, overlap):
 	elapsed_time = time.time() - start_time
 	return float(output.replace("\n","").replace("R: ", "").strip())/C, elapsed_time*1000
 
-def lundstrom_from_logdir(K, logdir):
+def lundstrom_from_logdir(K, K_to_predict, logdir):
 	dags = parse_logs(logdir)
 	results = []
 	
@@ -49,7 +49,7 @@ def lundstrom_from_logdir(K, logdir):
 		meanOverlap = 0
 
 		for appTime, app, tree in dags[dag]:
-			appTime, stages, response, demand, overlap = extract_data(K, appTime, app)
+			appTime, stages, response, demand, overlap = extract_data(K, K_to_predict, appTime, app)
 			meanAppTime += appTime
 			meanResponse += response
 			meanDemand += demand

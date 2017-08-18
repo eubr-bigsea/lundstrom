@@ -114,7 +114,7 @@ def extract_demand(K, stages):
 #
 # Extracted the data needed from spark log file
 #
-def extract_data(K, appTime, stages):
+def extract_data(K, appTime, stages, baseConfig):
 	import numpy as np
 	response = extract_response(K, stages)
 	demand = extract_demand(K, stages)

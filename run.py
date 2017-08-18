@@ -1,30 +1,71 @@
-import os, sys, json
+import os, sys, json, getopt
 
-# Getting params
-num_nodes = int(sys.argv[1])
-num_cores = int(sys.argv[2])
-ram_size = sys.argv[3]
-datasize = sys.argv[4]
-query = sys.argv[5]
-platform = sys.argv[6]
+def main(argv):
+	# Getting params
+	try:
+	  	opts, args = getopt.getopt(argv,"bn:c:r:d:q:p:")
+	except getopt.GetoptError:
+	  	print 'python run.py -n <nodes> -c <cores> -r <ram> -d <data> -q <query> -p <platform> -f <conffile> -b'
+	  	sys.exit(2)
 
-# reading config file
-dir_path = os.path.dirname(os.path.realpath(__file__))
-config_file = sys.argv[7] if len(sys.argv) == 8 else dir_path+"/config.json"
-config = json.loads(open(config_file, 'r').read())
+	config_file = False
+	baseConfig = False
+	usebase = False
 
-if platform == "compss":
-	from run_compss import run_model
-	# determining log dir
-	confdir = str(config["COMPSS_LOG_DIR"])
-elif platform == "spark":
-	from run_spark import run_model
-	# determining log dir
-	confdir = str(config["SPARK_LOG_DIR"])
-else:
-	print "ERROR: Only 'compss' and 'spark' are available. Please, type the platform name in lowercase."
+	# iterating over the params
+	for opt, value in opts:
+		if opt == "-n":
+			num_nodes = value
+		if opt == "-c":
+			num_cores = value
+		if opt == "-r":
+			ram_size = value
+		if opt == "-d":
+			datasize = value
+		if opt == "-q":
+			query = value
+		if opt == "-p":
+			platform = value
+		if opt == "-f":
+			config_file = value
+		if opt == "-b":
+			usebase = True
+
+	# input parameters - to predict
+	data = {"nodes": num_nodes, "cores": num_cores, "ram": ram_size, "data": datasize, "query": query}
+
+	# reading config
+	if not config_file:
+		config_file = os.path.dirname(os.path.realpath(__file__)) + "/config.json"
+
+	config = json.loads(open(config_file, 'r').read())
+
+	# deciding what to do with the params
+	baseConfig = config["BASE_CONFIG"]
+	if usebase:
+		config_with_log = {"nodes": baseConfig["nodes"], "cores": baseConfig["cores"], "ram": ram_size, "data": datasize, "query": query}
+		config_to_predict = data
+	else:
+		config_with_log = data
+		config_to_predict = False
+
+	# executing models
+	if platform == "compss":
+		from run_compss import run_model
+		# determining log dir
+		confdir = str(config["COMPSS_LOG_DIR"])
+	elif platform == "spark":
+		from run_spark import run_model
+		# determining log dir
+		confdir = str(config["SPARK_LOG_DIR"])
+	else:
+		print "ERROR: Only 'compss' and 'spark' are available. Please, type the platform name in lowercase."
+		sys.exit()
+
+	result = run_model(config_with_log, config_to_predict, confdir)
+	print result
 	sys.exit()
 
-result = run_model(num_nodes, num_cores, ram_size, datasize, query, confdir)
-print result["predicted"]
-sys.exit()
+
+if __name__ == "__main__":
+   main(sys.argv[1:])

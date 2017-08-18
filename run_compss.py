@@ -4,14 +4,14 @@
 # The Spark logs should be placed at the ./data/ folder, organized by query and number of executors.
 # In this example, the folders for all experiments are read and all those logs files are processed.
 #
-def run_model(num_nodes, num_cores, ram_size, datasize, query, confdir):
+def run_model(num_nodes, num_cores, ram_size, datasize, query, confdir, baseConfig):
 	from compss.parser import lundstrom_from_logdir
 
 	# determining log dir
 	logdir = confdir % (query, num_nodes, num_cores, ram_size, datasize)
 
 	# running lundstrom
-	results = lundstrom_from_logdir(num_nodes*num_cores, logdir)
+	results = lundstrom_from_logdir(num_nodes*num_cores, logdir, baseConfig)
 
 	meanAppTime = 0
 	meanPredTime = 0
