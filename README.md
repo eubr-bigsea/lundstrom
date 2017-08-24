@@ -9,4 +9,4 @@ python run.py -n {NODES} -c {CORES PER NODE} -r {RAM GB} -d {DATASET SIZE} -q {A
 -b param should be used when user wants do predict different number of cores. The base logs are defined in config.json file, while the config to predict is as the params.
 #python run.py {NODES} {CORES PER NODE} {RAM GB} {DATASET SIZE} {ALGORITHM OR APPLICATION} {PLATFORM}
 
-e.g.: python run.py 8 4 8G 2M kmeans compss
+e.g.: python run.py -n 8 -c 4 -r 8G -d 2M -q kmeans -p compss
