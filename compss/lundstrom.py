@@ -95,7 +95,7 @@ def extract_response(K, stages, factor):
 	response = []
 	for stage in stages:
 		time_1_server = sub_str_datetimes(stage["end_datetime"], stage["start_datetime"])
-		response.append(K*[(time_1_server/K)*factor])
+		response.append(K*[time_1_server*factor])
 
  	return response
 
@@ -107,7 +107,7 @@ def extract_demand(K, stages, factor):
 	demand = []
 	for stage in stages:
 		time_1_server = sub_str_datetimes(stage["end_datetime"], stage["start_datetime"])
-		demand.append(K*[(time_1_server/K)*factor])
+		demand.append(K*[time_1_server*factor])
 
  	return demand
 

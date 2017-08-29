@@ -128,20 +128,20 @@ def mean_dag(dags):
 
 
 
-def lundstrom_from_logdir(K, logdir):
+def lundstrom_from_logdir(K, K_to_predict, logdir):
 	dags = parse_logs(logdir)
-	for ahash in dags:
-		i = 0
-		for appTime, app in dags[ahash]:
-			summ = 0
-			data=""
-			for idx, stage in enumerate(app):
-				data += "%f " % stage["duration"]
-			write_file("./temp/%d.txt"%i, data)
-			i+=1
-			print i
+	# for ahash in dags:
+	# 	i = 0
+	# 	for appTime, app in dags[ahash]:
+	# 		summ = 0
+	# 		data=""
+	# 		for idx, stage in enumerate(app):
+	# 			data += "%f " % stage["duration"]
+	# 		write_file("./temp/%d.txt"%i, data)
+	# 		i+=1
+	# 		print i
 
-	sys.exit()
+	# sys.exit()
 	results = []
 	
 	for dag in dags:
@@ -153,7 +153,7 @@ def lundstrom_from_logdir(K, logdir):
 		meanOverlap = 0.0
 
 		for appTime, app in dags[dag]:
-			appTime, stages, response, demand, overlap = extract_data(K, appTime, app)
+			appTime, stages, response, demand, overlap = extract_data(K, K_to_predict, appTime, app)
 			meanAppTime += appTime
 			meanResponse += response
 			meanDemand += demand

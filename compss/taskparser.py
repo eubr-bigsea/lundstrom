@@ -119,7 +119,7 @@ def mean_dag(dags):
 
 
 
-def lundstrom_from_logdir(K, logdir):
+def lundstrom_from_logdir(K, K_to_predict, logdir):
 	dags = parse_logs(logdir)
 	for ahash in dags:
 		i = 0

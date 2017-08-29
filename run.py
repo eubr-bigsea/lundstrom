@@ -10,7 +10,7 @@ def main(argv):
 
 	config_file = False
 	baseConfig = False
-	usebase = False
+	cores_to_predict = False
 
 	# iterating over the params
 	for opt, value in opts:
@@ -28,8 +28,8 @@ def main(argv):
 			platform = value
 		if opt == "-f":
 			config_file = value
-		if opt == "-b":
-			usebase = True
+		if opt == "-pc":
+			cores_to_predict = value
 
 	# input parameters - to predict
 	data = {"nodes": num_nodes, "cores": num_cores, "ram": ram_size, "data": datasize, "query": query}
@@ -39,15 +39,6 @@ def main(argv):
 		config_file = os.path.dirname(os.path.realpath(__file__)) + "/config.json"
 
 	config = json.loads(open(config_file, 'r').read())
-
-	# deciding what to do with the params
-	baseConfig = config["BASE_CONFIG"]
-	if usebase:
-		config_with_log = {"nodes": baseConfig["nodes"], "cores": baseConfig["cores"], "ram": ram_size, "data": datasize, "query": query}
-		config_to_predict = data
-	else:
-		config_with_log = data
-		config_to_predict = False
 
 	# executing models
 	if platform == "compss":
@@ -62,7 +53,7 @@ def main(argv):
 		print "ERROR: Only 'compss' and 'spark' are available. Please, type the platform name in lowercase."
 		sys.exit()
 
-	result = run_model(config_with_log, config_to_predict, confdir)
+	result = run_model(data, cores_to_predict, confdir)
 	print result
 	sys.exit()
 
