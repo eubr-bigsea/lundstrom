@@ -6,6 +6,7 @@
 #
 def run_model(config_with_log, cores_to_predict, confdir):
 	from run_lundstrom import lundstrom_from_logdir
+	import string
 
 	query = config_with_log["query"]
 	nodes = int(config_with_log["nodes"])
@@ -14,7 +15,11 @@ def run_model(config_with_log, cores_to_predict, confdir):
 	data = config_with_log["data"]
 
 	# determining log dir
-	logdir = confdir % (query, nodes, cores, ram, data)
+	confdir = confdir.replace("%QUERY", query)
+	confdir = confdir.replace("%NODES", str(nodes))
+	confdir = confdir.replace("%CORES", str(cores))
+	confdir = confdir.replace("%RAM", ram)
+	logdir = confdir.replace("%DATA", data)
 
 	k = nodes*cores
 	k_to_predict = int(cores_to_predict) if cores_to_predict else k

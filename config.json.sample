@@ -1,4 +1,4 @@
 { 
-	"SPARK_LOG_DIR": "/home/disk2/speed/tuliobraga/Downloads/tpcds-ignacio/%s/%d_%d_%s_%s/",
-	"COMPSS_LOG_DIR": "/home/disk2/speed/tuliobraga/Downloads/compss-daniele/%s/%d_%d_%s_%s/"
+	"SPARK_LOG_DIR": "/home/disk2/speed/tuliobraga/Downloads/tpcds-ignacio/%QUERY/%NODES_%CORES_%RAM_%DATA/",
+	"COMPSS_LOG_DIR": "/home/disk2/speed/tuliobraga/Downloads/compss-daniele/%QUERY/%NODES_%CORES_%RAM_%DATA/"
 }

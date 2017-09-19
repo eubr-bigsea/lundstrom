@@ -10,10 +10,14 @@ def run_model(config_with_log, cores_to_predict, confdir):
 	cores = int(config_with_log["cores"])
 	ram = config_with_log["ram"]
 	data = config_with_log["data"]
-	from compss.parser import lundstrom_from_logdir
+	from compss.dagparser import lundstrom_from_logdir
 
 	# determining log dir
-	logdir = confdir % (query, nodes, cores, ram, data)
+	confdir = confdir.replace("%QUERY", query)
+	confdir = confdir.replace("%NODES", str(nodes))
+	confdir = confdir.replace("%CORES", str(cores))
+	confdir = confdir.replace("%RAM", ram)
+	logdir = confdir.replace("%DATA", data)
 
 	k = nodes*cores
 	k_to_predict = int(cores_to_predict) if cores_to_predict else k
