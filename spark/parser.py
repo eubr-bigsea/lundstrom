@@ -24,7 +24,7 @@ def parse_DAG(logPath):
 	for log in events:
 
 		# Why first/last task launch/finish times?
-		# Because all independent tasks can be submitted together, 
+		# Because all independent tasks can be submitted together,
 		# but some of them could become idle until arise available resources
 
 		# extract the first task launch time by stage
