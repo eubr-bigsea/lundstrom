@@ -48,10 +48,10 @@ def run_model(config_with_log, cores_to_predict, confdir):
 
 	sOutput = []
 	for s in stgs:
-		sOutput.append({"id":s, "time":stgs[s]["time"]/stgs[s]["amount"]})
+		sOutput.append({"id":s, "time": str(stgs[s]["time"]/stgs[s]["amount"])})
 
 	meanAppTime /= len(results)
 	meanPredTime /= len(results)
 	meanElapsed /= len(results)
 
-	return {"real": meanAppTime, "predicted": meanPredTime, "elapsed": meanElapsed, "stages": sOutput}
+	return {"real": str(meanAppTime), "predicted": str(meanPredTime), "elapsed": str(meanElapsed), "stages": sOutput}
