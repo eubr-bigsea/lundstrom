@@ -70,7 +70,7 @@ def main(argv):
 	if printStages == False:
 		result.pop('stages', None)
 
-	print result
+	print json.dumps(result)
 	sys.exit()
 
 
