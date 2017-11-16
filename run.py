@@ -3,7 +3,7 @@ import os, sys, json, getopt
 def main(argv):
 	# Getting params
 	try:
-	  	opts, args = getopt.getopt(argv,"bn:c:r:d:q:p:l:sn")
+	  	opts, args = getopt.getopt(argv,"bn:c:r:d:q:p:l:k:sn")
 	except getopt.GetoptError:
 	  	print 'python run.py -n <nodes> -c <cores> -r <ram> -d <data> -q <query> -p <platform> -f <conffile> -b'
 		print 'or'
@@ -36,7 +36,7 @@ def main(argv):
 			platform = value
 		if opt == "-f":
 			config_file = value
-		if opt == "-pc":
+		if opt == "-k":
 			cores_to_predict = value
 
 	# input parameters - to predict
