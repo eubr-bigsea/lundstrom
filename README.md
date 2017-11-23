@@ -6,10 +6,11 @@ Log folder directory should be configured at config.json file. See an example at
 ## Usage
 python run.py -n {NODES} -c {CORES PER NODE} -r {RAM GB} -d {DATASET SIZE} -q {ALGORITHM OR APPLICATION} -p {PLATFORM}
 
--p compss|spark
--k param should be used when user wants do predict different number of cores. The base logs are defined in config.json file, while the config to predict is as the params.
--s Add stages' details on output.
--t (Only for COMPSs) This param generates stage's intermediary files with task times. The stage files are generated under ./temp folder.
+| -p | compss|spark                                                                                                                                                            |
+|----|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -k | param should be used when user wants do predict different number of cores. The base logs are defined in config.json file, while the config to predict is as the params. |
+| -s | Add stages' details on output.                                                                                                                                          |
+| -t | (Only for COMPSs) This param generates stage's intermediary files with task times. The stage files are generated under ./temp folder. 
 
 #python run.py {NODES} {CORES PER NODE} {RAM GB} {DATASET SIZE} {ALGORITHM OR APPLICATION} {PLATFORM}
 
