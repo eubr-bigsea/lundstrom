@@ -13,6 +13,6 @@ python run.py -n {NODES} -c {CORES PER NODE} -r {RAM GB} -d {DATASET SIZE} -q {A
 | -s | Add stages' details on output. 
 | -t | (Only for COMPSs) This param generates stage's intermediary files with task times. The stage files are generated under ./temp folder. |
 
-#### python run.py {NODES} {CORES PER NODE} {RAM GB} {DATASET SIZE} {ALGORITHM OR APPLICATION} {PLATFORM}
+#### python run.py -n {NODES} -c {CORES PER NODE} -r {RAM GB} -d {DATASET SIZE} -q {ALGORITHM OR APPLICATION} -p {PLATFORM}
 
 e.g.: python run.py -n 8 -c 4 -r 8G -d 2M -q kmeans -p compss
