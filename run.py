@@ -3,7 +3,7 @@ import os, sys, json, getopt
 def main(argv):
 	# Getting params
 	try:
-	  	opts, args = getopt.getopt(argv,"bn:c:r:d:q:p:l:k:sn")
+	  	opts, args = getopt.getopt(argv,"bn:c:r:d:q:p:l:k:sn:t")
 	except getopt.GetoptError:
 	  	print 'python run.py -n <nodes> -c <cores> -r <ram> -d <data> -q <query> -p <platform> -f <conffile> -b'
 		print 'or'
@@ -14,6 +14,7 @@ def main(argv):
 	baseConfig = False
 	cores_to_predict = False
 	confdir = False
+	taskparser = False
 
 	# iterating over the params
 	printStages = False
@@ -38,9 +39,11 @@ def main(argv):
 			config_file = value
 		if opt == "-k":
 			cores_to_predict = value
+		if opt == "-t":
+			taskparser = True
 
 	# input parameters - to predict
-	data = {"nodes": num_nodes, "cores": num_cores, "ram": ram_size, "data": datasize, "query": query}
+	data = {"nodes": num_nodes, "cores": num_cores, "ram": ram_size, "data": datasize, "query": query, "taskparser": taskparser}
 
 	if confdir == False:
 		# reading config

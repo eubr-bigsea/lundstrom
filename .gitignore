@@ -20,3 +20,4 @@ config.json
 temp/*/*.txt
 temp/*/*.out
 temp/*/*.zip
+exec.sh

@@ -1,4 +1,4 @@
-import json, sys
+import json, sys, math
 from util import sub_unix_timestamps
 
 # 
@@ -72,25 +72,62 @@ def extract_overlap(K, stages):
 # K - number of servers
 # stages - stages object
 #
-def extract_response(K, stages, factor):
+def extract_response(K, stages, K_to_predict):
 	response = []
+	factor = float(K)/float(K_to_predict)
 	for stage in stages:
-		time_1_server = sub_unix_timestamps(stage["end"], stage["start"])
-		response.append(K*[time_1_server*factor])
+		if K != K_to_predict:
+			time_1_server = lazyFifoScheduling(stage, K, K_to_predict)
+			# time_1_server = averageCalc(stage, K, K_to_predict)
+			# time_1_server = factorCalc(stage, K, K_to_predict)
+		else:
+			time_1_server = sub_unix_timestamps(stage["end"], stage["start"])
 
+		response.append(K_to_predict*[time_1_server])
  	return response
 
 #
 # K - number of servers
 # stages - stages object
 #
-def extract_demand(K, stages, factor):
+def extract_demand(K, stages, K_to_predict):
 	demand = []
 	for stage in stages:
-		time_1_server = sub_unix_timestamps(stage["end"], stage["start"])
-		demand.append(K*[time_1_server*factor])
+		if K != K_to_predict:
+			time_1_server = lazyFifoScheduling(stage, K, K_to_predict)
+			# time_1_server = averageCalc(stage, K, K_to_predict)
+			# time_1_server = factorCalc(stage, K, K_to_predict)
+		else:
+			time_1_server = sub_unix_timestamps(stage["end"], stage["start"])
 
+		demand.append(K_to_predict*[time_1_server])
  	return demand
+
+def lazyFifoScheduling(stage, K, K_to_predict):
+	time_1_server = max_server_lazy(stage, K_to_predict)	
+	return time_1_server
+
+def max_server_lazy(stage, C):
+	servers = []
+	for i in xrange(0, C):
+		servers.append(0)
+
+	for idx, tid in enumerate(stage["tasks"]):
+		servers[idx%C] += stage["tasks"][tid]["time_spent"]
+
+	time_1_server = max(servers)
+	return time_1_server
+
+def averageCalc(stage, K, K_to_predict):
+	avg_task_time = stage["task_time_sum"]/stage["total_tasks"]
+	turns = math.ceil(float(stage["total_tasks"])/float(K_to_predict))
+	time_1_server = turns*avg_task_time
+	return time_1_server
+
+def factorCalc(stage, K, K_to_predict):
+	factor = float(K)/float(K_to_predict)
+	time_1_server = sub_unix_timestamps(stage["end"], stage["start"])*factor
+	return time_1_server
 
 #
 # Extracted the data needed from spark log file
@@ -99,9 +136,9 @@ def extract_data(K, K_to_predict, appTime, stages):
 	import numpy as np
 
 	# base config
-	factor = float(K)/float(K_to_predict)
+	# factor = float(K)/float(K_to_predict)
 
-	response = extract_response(K, stages, factor)
-	demand = extract_demand(K, stages, factor)
+	response = extract_response(K, stages, K_to_predict)
+	demand = extract_demand(K, stages, K_to_predict)
 	overlap = extract_overlap(K, stages)
 	return (appTime, stages, np.array(response), np.array(demand), np.array(overlap))

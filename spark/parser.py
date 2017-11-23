@@ -21,6 +21,7 @@ def parse_DAG(logPath):
 	open_stages = []
 	app = {}
 	stages = []
+
 	for log in events:
 
 		# Why first/last task launch/finish times?
@@ -30,8 +31,19 @@ def parse_DAG(logPath):
 		# extract the first task launch time by stage
 		if log["Event"] == "SparkListenerTaskStart":
 			nid = stage_id_from_task(log, stage_jobs)
+
+			# initializing bag of tasks per stage
+			taskID = log["Task Info"]["Task ID"];
+
+			if app[nid]["tasks"] == False:
+				app[nid]["tasks"] = {}
+
+			app[nid]["tasks"][taskID] = {"start": log["Task Info"]["Launch Time"]}
+
+			
 			if app[nid]["start"] == False:
 				app[nid]["start"] = log["Task Info"]["Launch Time"]
+				
 
 				# add starting stage to list of overlap stages of those who are still running
 				for opened_nid in open_stages:
@@ -44,7 +56,12 @@ def parse_DAG(logPath):
 		# extract the last task finish time by stage
 		if log["Event"] == "SparkListenerTaskEnd":
 			nid = stage_id_from_task(log, stage_jobs)
+			taskID = log["Task Info"]["Task ID"];
 			app[nid]["end"] = log["Task Info"]["Finish Time"]
+			app[nid]["tasks"][taskID]["end"] = log["Task Info"]["Finish Time"]
+			app[nid]["tasks"][taskID]["time_spent"] = sub_unix_timestamps(app[nid]["tasks"][taskID]["end"], app[nid]["tasks"][taskID]["start"])
+			app[nid]["task_time_sum"] += app[nid]["tasks"][taskID]["time_spent"]
+			app[nid]["total_tasks"] += 1
 
 		# extract start and end times for the application
 		# allows to calculate the application execution time
@@ -76,7 +93,7 @@ def parse_DAG(logPath):
 			parents = [ "J%sS%s" % (stage_jobs[parentId], parentId) for parentId in log["Stage Info"]["Parent IDs"] ]
 
 			# initialize
-			app[nid] = {"id": nid, "job_id":stage_jobs[stageId], "stage_id":stageId, "overlap": [], "parents": parents, "start": False, "end": False}
+			app[nid] = {"id": nid, "job_id":stage_jobs[stageId], "stage_id":stageId, "overlap": [], "parents": parents, "start": False, "end": False, "tasks": False, "task_time_sum": 0, "total_tasks": 0}
 
 		elif log["Event"] == "SparkListenerStageCompleted":
 			# extract the stage ID

@@ -60,7 +60,7 @@ def lundstrom_from_logdir(K, K_to_predict, logdir):
 		meanDemand /= executions
 		meanOverlap /= executions
 
-		predTime, elapsed = lundstrom(len(app), K, meanResponse, meanDemand, meanOverlap)
+		predTime, elapsed = lundstrom(len(app), K_to_predict, meanResponse, meanDemand, meanOverlap)
 		results.append((meanAppTime, predTime, elapsed, app, tree))
 
 	return results

@@ -1,3 +1,5 @@
+from util import sub_str_datetimes
+
 #
 # This file is just an usage example. 
 # Here we define a list of queries and a list of amount of executors.
@@ -10,7 +12,12 @@ def run_model(config_with_log, cores_to_predict, confdir):
 	cores = int(config_with_log["cores"])
 	ram = config_with_log["ram"]
 	data = config_with_log["data"]
-	from compss.dagparser import lundstrom_from_logdir
+	stgs = {};
+
+	if config_with_log["taskparser"]:
+		from compss.taskparser import lundstrom_from_logdir
+	else:
+		from compss.dagparser import lundstrom_from_logdir
 
 	# determining log dir
 	confdir = confdir.replace("%QUERY", query)
@@ -33,8 +40,20 @@ def run_model(config_with_log, cores_to_predict, confdir):
 		meanPredTime+=predTime
 		meanElapsed+=elapsed
 
+		# calc each stage
+		for stage in app:
+			if not stgs.has_key(stage["id"]):
+				stgs[stage["id"]] = {"time": 0, "amount": 0}
+
+			stgs[stage["id"]]["time"] = sub_str_datetimes(stage["end"]["datetime"], stage["start"]["datetime"])
+			stgs[stage["id"]]["amount"] += 1
+
+	sOutput = []
+	for s in stgs:
+		sOutput.append({"id":s, "time": str(stgs[s]["time"]/stgs[s]["amount"])})
+
 	meanAppTime /= len(results)
 	meanPredTime /= len(results)
 	meanElapsed /= len(results)
 
-	return {"real": meanAppTime, "predicted": meanPredTime, "elapsed": meanElapsed}
+	return {"real": meanAppTime, "predicted": meanPredTime, "elapsed": meanElapsed, "stages": sOutput}
