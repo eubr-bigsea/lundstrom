@@ -1,12 +1,13 @@
 import json, sys, math
 from util import sub_unix_timestamps
+from extrapolation import lazyFifoScheduling, averageCalc, factorCalc
 
-# 
+#
 # Calculate overlap factor
-# The overlap factor, is defined as the fraction of task i residence time 
+# The overlap factor, is defined as the fraction of task i residence time
 # for which task i overlaps with task j
 # (MAKVA & LUNDSTROM, p. 261)
-# 
+#
 # stage1 - task i
 # stage2 - task j
 #
@@ -48,8 +49,8 @@ def extract_overlap(K, stages):
 		overlap_map.append([])
 		for j, stage_j in enumerate(stages):
 			if i == j:
-				# the theta for i==j is actually 1, however the arrival time equation sum considers i=/=j only. 
-				# This condition is not implemented on the makva.c file, so we should use theta=0. 
+				# the theta for i==j is actually 1, however the arrival time equation sum considers i=/=j only.
+				# This condition is not implemented on the makva.c file, so we should use theta=0.
 				overlap_map[i].append(0)
 			else:
 				overlap_map[i].append(0)
@@ -60,7 +61,7 @@ def extract_overlap(K, stages):
 			if stage_j["id"] in stage_i["overlap"]:
 
 				# calc overlap factor
-				# the overlap factor, is defined as the fraction of task i residence time 
+				# the overlap factor, is defined as the fraction of task i residence time
 				# for which task i overlaps with taskj
 				# (MAKVA & LUNDSTROM, p. 261)
 				factor = overlap_factor(K, stage_i, stage_j)
@@ -74,15 +75,8 @@ def extract_overlap(K, stages):
 #
 def extract_response(K, stages, K_to_predict):
 	response = []
-	factor = float(K)/float(K_to_predict)
 	for stage in stages:
-		if K != K_to_predict:
-			time_1_server = lazyFifoScheduling(stage, K, K_to_predict)
-			# time_1_server = averageCalc(stage, K, K_to_predict)
-			# time_1_server = factorCalc(stage, K, K_to_predict)
-		else:
-			time_1_server = sub_unix_timestamps(stage["end"], stage["start"])
-
+		time_1_server = sub_unix_timestamps(stage["end"], stage["start"])
 		response.append(K_to_predict*[time_1_server])
  	return response
 
@@ -93,41 +87,9 @@ def extract_response(K, stages, K_to_predict):
 def extract_demand(K, stages, K_to_predict):
 	demand = []
 	for stage in stages:
-		if K != K_to_predict:
-			time_1_server = lazyFifoScheduling(stage, K, K_to_predict)
-			# time_1_server = averageCalc(stage, K, K_to_predict)
-			# time_1_server = factorCalc(stage, K, K_to_predict)
-		else:
-			time_1_server = sub_unix_timestamps(stage["end"], stage["start"])
-
+		time_1_server = sub_unix_timestamps(stage["end"], stage["start"])
 		demand.append(K_to_predict*[time_1_server])
  	return demand
-
-def lazyFifoScheduling(stage, K, K_to_predict):
-	time_1_server = max_server_lazy(stage, K_to_predict)	
-	return time_1_server
-
-def max_server_lazy(stage, C):
-	servers = []
-	for i in xrange(0, C):
-		servers.append(0)
-
-	for idx, tid in enumerate(stage["tasks"]):
-		servers[idx%C] += stage["tasks"][tid]["time_spent"]
-
-	time_1_server = max(servers)
-	return time_1_server
-
-def averageCalc(stage, K, K_to_predict):
-	avg_task_time = stage["task_time_sum"]/stage["total_tasks"]
-	turns = math.ceil(float(stage["total_tasks"])/float(K_to_predict))
-	time_1_server = turns*avg_task_time
-	return time_1_server
-
-def factorCalc(stage, K, K_to_predict):
-	factor = float(K)/float(K_to_predict)
-	time_1_server = sub_unix_timestamps(stage["end"], stage["start"])*factor
-	return time_1_server
 
 #
 # Extracted the data needed from spark log file

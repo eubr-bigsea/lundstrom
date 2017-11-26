@@ -1,6 +1,7 @@
 from spark.lundstrom import extract_data
 from spark.parser import parse_DAG
-from util import write_file_from_matrix, plot_DAG, hash_tree, parse_stages_as_tree, read_files
+from util import write_file_from_matrix, plot_DAG, hash_tree, parse_stages_as_tree, read_files, datetime_to_unix_timestamp
+from spark.extrapolation import lazyFifoScheduling
 import sys,os, math, time
 
 def write_files(data):
@@ -49,6 +50,15 @@ def lundstrom_from_logdir(K, K_to_predict, logdir):
 		meanOverlap = 0
 
 		for appTime, app, tree in dags[dag]:
+
+			# resizing stage if extrapolating
+			if K != K_to_predict:
+				for stage in app:
+					newStage = stage
+					time_1_server = lazyFifoScheduling(stage, K, K_to_predict)
+					new_end_timestamp = int(stage["start"] + time_1_server)
+					stage["end"] = new_end_timestamp
+
 			appTime, stages, response, demand, overlap = extract_data(K, K_to_predict, appTime, app)
 			meanAppTime += appTime
 			meanResponse += response
