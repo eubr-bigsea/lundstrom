@@ -54,4 +54,6 @@ def run_model(config_with_log, cores_to_predict, confdir):
 	meanPredTime /= len(results)
 	meanElapsed /= len(results)
 
-	return {"real": str(meanAppTime), "predicted": str(meanPredTime), "elapsed": str(meanElapsed), "stages": sOutput}
+	error = (meanAppTime-meanPredTime)/meanAppTime
+
+	return {"real": str(meanAppTime), "predicted": str(meanPredTime), "model_elapsed": str(meanElapsed), "stages": sOutput}

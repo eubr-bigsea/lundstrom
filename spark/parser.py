@@ -21,6 +21,7 @@ def parse_DAG(logPath):
 	open_stages = []
 	app = {}
 	stages = []
+	appStart = False
 
 	for log in events:
 
@@ -65,14 +66,18 @@ def parse_DAG(logPath):
 
 		# extract start and end times for the application
 		# allows to calculate the application execution time
-		if log["Event"] == "SparkListenerApplicationStart":
-			appStart = log["Timestamp"]
-		elif log["Event"] == "SparkListenerApplicationEnd":
+		# if log["Event"] == "SparkListenerApplicationStart":
+			# appStart = log["Timestamp"]
+		# elif log["Event"] == "SparkListenerApplicationEnd":
+		if log["Event"] == "SparkListenerApplicationEnd":
 			appEnd = log["Timestamp"]
 
 		# extract a list of stages for each Job
 		# this way it is possible to create the execution DAG automatically
 		elif log["Event"] == "SparkListenerJobStart":
+			if appStart == False:
+				appStart = log["Submission Time"]
+
 			jid = log["Job ID"]
 			for sid in log["Stage IDs"]:
 				stage_jobs[sid] = jid

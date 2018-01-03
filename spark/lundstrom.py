@@ -24,6 +24,8 @@ def overlap_factor(K, stage1, stage2):
 	# Pr_Ei_less_Sj = int(stage1["end"] < stage2["start"])
 
 	# pij = 1.0 - Pr_Ej_less_Si - Pr_Ei_less_Sj
+	if stage1["end"] < stage2["start"] or stage2["end"] < stage1["start"]:
+		return 0
 
 	start_ovl = stage2["start"] if stage2["start"] > stage1["start"] else stage1["start"]
 	end_ovl = stage2["end"] if stage2["end"] < stage1["end"] else stage1["end"]

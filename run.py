@@ -1,6 +1,8 @@
-import os, sys, json, getopt
+import os, sys, json, getopt, time
 
 def main(argv):
+	start_time = time.time()
+
 	# Getting params
 	try:
 	  	opts, args = getopt.getopt(argv,"bn:c:r:d:q:p:l:k:sn:t")
@@ -73,6 +75,8 @@ def main(argv):
 	if printStages == False:
 		result.pop('stages', None)
 
+	elapsed_time = time.time() - start_time
+	result["tool_elapsed"] = elapsed_time*1000
 	print json.dumps(result)
 	sys.exit()
 

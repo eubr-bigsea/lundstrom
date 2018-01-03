@@ -13,10 +13,14 @@ def write_files(data):
 
 def parse_logs(logpath):
 	files = read_files(logpath)
+	if len(files) == 0:
+		print "ERROR: No logs found at "+logpath
+		sys.exit()
 
 	dags = {}
 	for filename in files:
 		appTime, app = parse_DAG(logpath + filename)
+		# print appTime, filename
 
 		tree = parse_stages_as_tree(app)
 		ahash = hash_tree(tree)
